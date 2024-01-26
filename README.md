@@ -15,3 +15,8 @@ usados:
 - graham_formula
 - dividend_discount_model
 - peter_lynch_valuation
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
