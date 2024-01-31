@@ -1,16 +1,6 @@
 import yfinance as yf
 import pandas as pd
 
-ticker_symbol = "AAPL"
-print("Getting Stock data...")
-ticker = yf.Ticker(ticker_symbol)
-print("Finish collecting stock data...")
-stock_data = ticker.history(period="max")
-
-print(f"api ticker.info type is: {type(stock_data)}")
-
-#print(historico_ticker)
-
 # Function to calculate CAGR
 def calculate_cagr(beginning_value, ending_value, years):
     try:
@@ -20,30 +10,40 @@ def calculate_cagr(beginning_value, ending_value, years):
         print("Error: Number of years cannot be zero.")
         return None
 
-# Number of periods ago to look back for dividends
-periods_ago = 5
 
-# Identify dates with dividends
-dividend_dates = stock_data.index[stock_data['Dividends'] > 0]
+def dividend_cagr(ticker_symbol):
 
-# Calculate the CAGR for dividends
-cagr_dividends = None
+    # Number of periods ago to look back for dividends
+    YEARS_AGO = 5
+    
+    ticker = yf.Ticker(ticker_symbol)
+    
+    try:
+        dividend_dates_data = ticker.dividends
+        dividend_dates_data.index = dividend_dates_data.index.strftime('%Y-%m')
 
-if len(dividend_dates) > 1:
-    # Use the last dividend date and the earliest dividend date 5 periods ago
-    latest_dividend_date = dividend_dates.max()
-    dividend_periods_ago_date = latest_dividend_date - pd.DateOffset(years=5)
+        # Convert the index to datetime objects
+        dividend_dates_data.index = pd.to_datetime(dividend_dates_data.index)
 
-    latest_dividend = stock_data.loc[latest_dividend_date, 'Dividends']
-    dividend_periods_ago = stock_data.loc[dividend_periods_ago_date, 'Dividends']
+        # Find the closest date to today
+        closest_date_today = dividend_dates_data.index.max()
 
-    # Calculate CAGR using the dividends on specific dates
-    cagr_dividends = calculate_cagr(dividend_periods_ago, latest_dividend, (latest_dividend_date - dividend_periods_ago_date).days / 365)
+        # Find the date that is 5 years ago
+        five_years_ago = closest_date_today - pd.DateOffset(years=5)
 
-# Print the calculated CAGR for dividends
-if cagr_dividends is not None:
-    print(f"CAGR for Dividends: {cagr_dividends:.2%}")
-else:
-    print("CAGR calculation failed.")
+        # Get the values for the closest date to today and the date that is 5 years ago
+        value_today = dividend_dates_data.loc[closest_date_today]
+        value_five_years_ago = dividend_dates_data.loc[five_years_ago]
 
-print(dividend_periods_ago)
+        # Calculate CAGR using the dividends on specific dates
+        cagr_dividends = calculate_cagr(value_five_years_ago, value_today, YEARS_AGO)
+
+        return cagr_dividends
+        
+    except KeyError as e:
+        print(f"Error: {e}")
+        print(f"The specified timestamp {dividend_periods_ago_date} is not found in the DataFrame's index.")
+
+# if __name__ == "__main__":
+#    stock_symbol = "AAPL"
+#    print(dividend_cagr(stock_symbol))
