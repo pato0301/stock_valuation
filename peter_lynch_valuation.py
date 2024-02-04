@@ -11,9 +11,9 @@ def peter_lynch_stock_value(stock_symbol):
     dividend_yield = stock.info["dividendYield"] * 100
     price_to_earnings = stock.info["trailingPE"]
 
-    print("dividend_yield: ", dividend_yield)
-    print("future_earnings_per_share: ", future_earnings_per_share)
-    print("price_to_earnings: ", price_to_earnings)
+    #print("dividend_yield: ", dividend_yield)
+    #print("future_earnings_per_share: ", future_earnings_per_share)
+    #print("price_to_earnings: ", price_to_earnings)
 
     # the result show you if this is over value, fairly value or under value
     intrinsic_value = (future_earnings_per_share + dividend_yield) / price_to_earnings

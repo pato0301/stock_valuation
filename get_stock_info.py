@@ -11,4 +11,11 @@ def get_stock_data(ticker):
     # Convert the JSON string to a Python dictionary
     ticker_data = json.loads(json_string)
 
+    print(ticker_data)
+
     return ticker_data
+
+
+if __name__ == "__main__":
+   stock_symbol = "AAPL"
+   print(get_stock_data(stock_symbol))
